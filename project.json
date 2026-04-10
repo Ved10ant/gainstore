@@ -1,0 +1,23 @@
+{
+  "overview": "A full-featured e-commerce store for protein and gym supplements. Browse, filter, and purchase products with a seamless shopping experience powered by Stripe payments and Internet Identity accounts.",
+  "features": [
+    "Product catalog with categories, search, and filtering",
+    "Product detail pages with nutrition facts and size variants",
+    "Shopping cart with persistent state and quantity controls",
+    "Stripe checkout with billing address form",
+    "Order confirmation and order history",
+    "User accounts via Internet Identity",
+    "Saved addresses for repeat customers"
+  ],
+  "category": "ecommerce",
+  "tags": [
+    "ecommerce",
+    "supplements",
+    "gym",
+    "protein",
+    "fitness",
+    "shop",
+    "stripe"
+  ],
+  "last_updated": "2026-04-10T10:16:44.533Z"
+}

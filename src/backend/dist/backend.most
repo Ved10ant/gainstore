@@ -1,0 +1,111 @@
+// Version: 1.0.0
+type Address__166294866 =
+  {
+    city : Text;
+    country : Text;
+    fullName : Text;
+    postalCode : Text;
+    state : Text;
+    street : Text
+  };
+type CartItem__1044444615 =
+  {productId : ProductId__160010635; quantity : Nat; variantIndex : Nat};
+type Category__403107212 =
+  {#accessories; #postWorkout; #preWorkout; #proteins; #vitamins};
+type Data__791452850<K, V> =
+  {var count : Nat__490723111; kvs : [var ?(K, V)]};
+type Internal__8484328<K, V> =
+  {children : [var ?Node__46230540<K, V>]; data : Data__791452850<K, V>};
+type Leaf__809889148<K, V> = {data : Data__791452850<K, V>};
+type List__415060402<T> = List__790383201<T>;
+type List__790383201<T> =
+  {
+    var blockIndex : Nat__490723111;
+    var blocks : [var [var ?T]];
+    var elementIndex : Nat__490723111
+  };
+type Map__158565046<K, V> = Map__297112838<K, V>;
+type Map__297112838<K, V> =
+  {var root : Node__46230540<K, V>; var size : Nat__490723111};
+type Map__605269027<K, V> = Map__158565046<K, V>;
+type Nat__490723111 = Nat__920180692;
+type Nat__920180692 = Nat;
+type Node__46230540<K, V> =
+  {#internal : Internal__8484328<K, V>; #leaf : Leaf__809889148<K, V>};
+type NutritionFacts__588968017 =
+  {calories : Nat; carbs : Nat; fat : Nat; protein : Nat; servingSize : Text};
+type OrderId__197865225 = Nat;
+type OrderItem__241319351 =
+  {
+    priceInCents : Nat;
+    productId : ProductId__160010635;
+    productName : Text;
+    quantity : Nat;
+    variantIndex : Nat
+  };
+type OrderStatus__393009242 =
+  {#cancelled; #delivered; #paid; #pending; #shipped};
+type Order__141779993 =
+  {
+    billingAddress : ?Address__166294866;
+    createdAt : Timestamp__301639476;
+    id : OrderId__197865225;
+    items : [OrderItem__241319351];
+    status : OrderStatus__393009242;
+    stripeSessionId : ?Text;
+    totalInCents : Nat;
+    userId : Principal
+  };
+type ProductId__160010635 = Nat;
+type ProductType__843864214 = Text;
+type Product__389207432 =
+  {
+    brand : Text;
+    category : Category__403107212;
+    description : Text;
+    id : ProductId__160010635;
+    imageId : ?Text;
+    inStock : Bool;
+    ingredients : Text;
+    name : Text;
+    nutritionFacts : ?NutritionFacts__588968017;
+    productType : ProductType__843864214;
+    sizeVariants : [SizeVariant__516188979]
+  };
+type SizeVariant__516188979 = {name : Text; priceInCents : Nat};
+type StripeConfiguration__96897619 =
+  {allowedCountries : [Text]; secretKey : Text};
+type Timestamp__301639476 = Int;
+type UserProfile__446616884 =
+  {displayName : Text; savedAddresses : [Address__166294866]};
+type UserRole__1054455867 = {#admin; #guest; #user};
+actor {
+  stable accessControlState :
+    {
+      var adminAssigned : Bool;
+      userRoles : Map__605269027<Principal, UserRole__1054455867>
+    };
+  stable carts :
+    {
+      var root :
+        Node__46230540<Principal, List__415060402<CartItem__1044444615>>;
+      var size : Nat__490723111
+    };
+  stable orders :
+    {
+      var root : Node__46230540<OrderId__197865225, Order__141779993>;
+      var size : Nat__490723111
+    };
+  stable products :
+    {
+      var root : Node__46230540<ProductId__160010635, Product__389207432>;
+      var size : Nat__490723111
+    };
+  stable profiles :
+    {
+      var root : Node__46230540<Principal, UserProfile__446616884>;
+      var size : Nat__490723111
+    };
+  stable var seeded : Bool;
+  stable var stripeConfig : ?StripeConfiguration__96897619
+};

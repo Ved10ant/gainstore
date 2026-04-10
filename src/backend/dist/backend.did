@@ -1,0 +1,169 @@
+type http_request_result = 
+ record {
+   body: blob;
+   headers: vec http_header;
+   status: nat;
+ };
+type http_header = 
+ record {
+   name: text;
+   value: text;
+ };
+type UserRole = 
+ variant {
+   admin;
+   guest;
+   user;
+ };
+type UserProfile = 
+ record {
+   displayName: text;
+   savedAddresses: vec Address;
+ };
+type TransformationOutput = 
+ record {
+   body: blob;
+   headers: vec http_header;
+   status: nat;
+ };
+type TransformationInput = 
+ record {
+   context: blob;
+   response: http_request_result;
+ };
+type Timestamp = int;
+type StripeSessionStatus = 
+ variant {
+   completed: record {
+                response: text;
+                userPrincipal: opt text;
+              };
+   failed: record {error: text;};
+ };
+type StripeConfiguration = 
+ record {
+   allowedCountries: vec text;
+   secretKey: text;
+ };
+type SizeVariant = 
+ record {
+   name: text;
+   priceInCents: nat;
+ };
+type ShoppingItem = 
+ record {
+   currency: text;
+   priceInCents: nat;
+   productDescription: text;
+   productName: text;
+   quantity: nat;
+ };
+type ProductType = text;
+type ProductId = nat;
+type Product = 
+ record {
+   brand: text;
+   category: Category;
+   description: text;
+   id: ProductId;
+   imageId: opt text;
+   inStock: bool;
+   ingredients: text;
+   name: text;
+   nutritionFacts: opt NutritionFacts;
+   productType: ProductType;
+   sizeVariants: vec SizeVariant;
+ };
+type OrderStatus = 
+ variant {
+   cancelled;
+   delivered;
+   paid;
+   pending;
+   shipped;
+ };
+type OrderItem = 
+ record {
+   priceInCents: nat;
+   productId: ProductId;
+   productName: text;
+   quantity: nat;
+   variantIndex: nat;
+ };
+type OrderId = nat;
+type Order = 
+ record {
+   billingAddress: opt Address;
+   createdAt: Timestamp;
+   id: OrderId;
+   items: vec OrderItem;
+   status: OrderStatus;
+   stripeSessionId: opt text;
+   totalInCents: nat;
+   userId: principal;
+ };
+type NutritionFacts = 
+ record {
+   calories: nat;
+   carbs: nat;
+   fat: nat;
+   protein: nat;
+   servingSize: text;
+ };
+type Category = 
+ variant {
+   accessories;
+   postWorkout;
+   preWorkout;
+   proteins;
+   vitamins;
+ };
+type CartItem = 
+ record {
+   productId: ProductId;
+   quantity: nat;
+   variantIndex: nat;
+ };
+type Address = 
+ record {
+   city: text;
+   country: text;
+   fullName: text;
+   postalCode: text;
+   state: text;
+   street: text;
+ };
+service : {
+  _initializeAccessControl: () -> ();
+  addAddress: (address: Address) -> ();
+  addProduct: (product: Product) -> (ProductId);
+  addToCart: (item: CartItem) -> ();
+  assignCallerUserRole: (user: principal, role: UserRole) -> ();
+  clearCart: () -> ();
+  confirmOrder: (orderId: OrderId) -> ();
+  createCheckoutSession: (items: vec ShoppingItem, successUrl: text,
+   cancelUrl: text) -> (text);
+  deleteProduct: (id: ProductId) -> ();
+  getCallerUserProfile: () -> (opt UserProfile) query;
+  getCallerUserRole: () -> (UserRole) query;
+  getCart: () -> (vec CartItem) query;
+  getMyOrders: () -> (vec Order) query;
+  getOrderById: (orderId: OrderId) -> (opt Order) query;
+  getOrderHistory: () -> (vec Order) query;
+  getProduct: (id: ProductId) -> (opt Product) query;
+  getProducts: () -> (vec Product) query;
+  getProductsByCategory: (category: Category) -> (vec Product) query;
+  getStripeSessionStatus: (sessionId: text) -> (StripeSessionStatus);
+  getUserProfile: (user: principal) -> (opt UserProfile) query;
+  isCallerAdmin: () -> (bool) query;
+  isStripeConfigured: () -> (bool) query;
+  removeAddress: (index: nat) -> ();
+  removeCartItem: (productId: nat, variantIndex: nat) -> ();
+  saveCallerUserProfile: (profile: UserProfile) -> ();
+  searchProducts: (term: text) -> (vec Product) query;
+  setStripeConfiguration: (config: StripeConfiguration) -> ();
+  transform: (input: TransformationInput) -> (TransformationOutput) query;
+  updateCartItem: (productId: nat, variantIndex: nat, quantity: nat) -> ();
+  updateOrderStatus: (orderId: OrderId, status: OrderStatus) -> ();
+  updateProduct: (product: Product) -> ();
+}
